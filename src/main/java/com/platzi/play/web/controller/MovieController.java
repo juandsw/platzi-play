@@ -1,7 +1,7 @@
 package com.platzi.play.web.controller;
 
-import com.platzi.play.persistence.entity.MovieEntity;
-import com.platzi.play.persistence.repository.MovieRepository;
+import com.platzi.play.domain.dto.MovieDto;
+import com.platzi.play.domain.service.MovieService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,14 +11,15 @@ import java.util.List;
 
 public class MovieController {
 
-    private MovieRepository movieRepository;
+    private final MovieService movieService;
 
-    public MovieController(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
+    public MovieController(MovieService movieService) {
+        this.movieService = movieService;
     }
 
+
     @GetMapping("/movies")
-    public List<MovieEntity> getAll() {
-        return (List<MovieEntity>) this.movieRepository.findAll();
+    public List<MovieDto> getAll() {
+        return movieService.getAll();
     }
 }
