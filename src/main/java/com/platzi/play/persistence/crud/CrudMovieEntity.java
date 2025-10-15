@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.UUID;
 
 public interface CrudMovieEntity extends CrudRepository<MovieEntity, UUID> {
+    MovieEntity findFirstByTitulo(String titulo);
 }

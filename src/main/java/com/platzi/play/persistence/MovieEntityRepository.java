@@ -2,13 +2,13 @@ package com.platzi.play.persistence;
 
 import com.platzi.play.domain.dto.MovieDto;
 import com.platzi.play.domain.dto.UpdateMovieDto;
+import com.platzi.play.domain.exceptions.MovieAlreadyExistException;
+import com.platzi.play.domain.exceptions.MovieNotFound;
 import com.platzi.play.domain.repository.MovieRepository;
 import com.platzi.play.persistence.crud.CrudMovieEntity;
 import com.platzi.play.persistence.entity.MovieEntity;
 import com.platzi.play.persistence.mapper.MovieMapper;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,23 +36,36 @@ public class MovieEntityRepository  implements MovieRepository {
 
     @Override
     public MovieDto save(MovieDto movieDto) {
+
+        if(this.crudMovieEntity.findFirstByTitulo(movieDto.title()) != null) {
+            throw new MovieAlreadyExistException(movieDto.title());
+        }
+
         MovieEntity movieEntity = this.movieMapper.toEntity(movieDto);
 
         return this.movieMapper.toDto(this.crudMovieEntity.save(movieEntity));
-
     }
 
     @Override
     public MovieDto update(UUID id, UpdateMovieDto updateMovieDto) {
-        MovieEntity movieEntity = this.crudMovieEntity.findById(id).orElse(null);
-
-        if (movieEntity == null) return null;
+        MovieEntity movieEntity = this.crudMovieEntity.findById(id).
+                orElseThrow(() -> new MovieNotFound(id));
 
         this.movieMapper.updateEntityFromDto(updateMovieDto, movieEntity);
 
         return this.movieMapper.toDto(crudMovieEntity.save(movieEntity));
 
 
+    }
+
+    @Override
+    public MovieDto delete(UUID id) {
+        MovieEntity movieEntity = this.crudMovieEntity.findById(id).
+                orElseThrow(() -> new MovieNotFound(id));
+
+        this.crudMovieEntity.delete(movieEntity);
+
+        return this.movieMapper.toDto(movieEntity);
     }
 
 

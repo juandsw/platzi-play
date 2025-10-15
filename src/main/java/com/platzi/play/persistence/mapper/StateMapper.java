@@ -5,6 +5,10 @@ import org.mapstruct.Named;
 
 public class StateMapper {
 
+    private StateMapper() {
+        throw new IllegalStateException("Utility class");
+    }
+
     @Named("stringToState")
     public static State stringToState(String state) {
         if(state == null) return null;

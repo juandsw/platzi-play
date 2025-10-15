@@ -12,5 +12,6 @@ public interface MovieRepository {
     MovieDto getById(UUID id);
     MovieDto save(MovieDto movieDto);
     MovieDto update(UUID id, UpdateMovieDto updateMovieDto);
+    MovieDto delete(UUID id);
 
 }
